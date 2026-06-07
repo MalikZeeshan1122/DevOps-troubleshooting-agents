@@ -1,0 +1,11 @@
+2026-06-07T14:22:01.123Z ERROR [api-gateway] upstream connect error: connection failure
+2026-06-07T14:22:01.456Z WARN  [api-gateway] retried upstream request to payment-service:8080 (attempt 3/3)
+2026-06-07T14:22:02.001Z ERROR [api-gateway] HTTP 503 Service Unavailable path=/api/v1/checkout latency=30012ms
+2026-06-07T14:22:05.789Z INFO  [k8s-events] Pod payment-service-7d4f8b9c6-xk2mp: Unhealthy - Liveness probe failed: HTTP probe failed with statuscode: 503
+2026-06-07T14:22:08.112Z WARN  [k8s-events] Pod payment-service-7d4f8b9c6-xk2mp: Container payment-service OOMKilled (exit code 137)
+2026-06-07T14:22:08.445Z INFO  [k8s-events] Pod payment-service-7d4f8b9c6-xk2mp: Back-off restarting failed container
+2026-06-07T14:22:15.001Z ERROR [payment-service] java.lang.OutOfMemoryError: Java heap space
+2026-06-07T14:22:15.002Z ERROR [payment-service]  at com.acme.payment.BatchProcessor.processPendingTransactions(BatchProcessor.java:142)
+2026-06-07T14:22:15.003Z ERROR [payment-service]  at com.acme.payment.Scheduler.run(Scheduler.java:58)
+2026-06-07T14:23:01.000Z WARN  [datadog] payment-service.memory.usage > 95% of limit (limit: 512Mi, usage: 498Mi)
+2026-06-07T14:23:01.100Z WARN  [datadog] payment-service.restart.count spike: 12 restarts in 10m (baseline: 0)

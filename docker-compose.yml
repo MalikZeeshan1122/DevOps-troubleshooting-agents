@@ -1,0 +1,10 @@
+services:
+  devops-agent:
+    build: .
+    env_file:
+      - .env
+    volumes:
+      - ./samples:/app/samples:ro
+      - ./reports:/app/reports
+    stdin_open: true
+    tty: true

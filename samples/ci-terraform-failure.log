@@ -1,0 +1,18 @@
+Running terraform plan in directory ./infra/prod
+Initializing the backend...
+Error: Error acquiring the state lock
+
+Error message: resource temporarily unavailable
+Lock Info:
+  ID:        8f3a2b1c-4d5e-6f7g-8h9i-0j1k2l3m4n5o
+  Path:      s3://acme-terraform-state/prod/terraform.tfstate
+  Operation: OperationTypePlan
+  Who:       github-actions@runner-abc123
+  Version:   1.7.5
+  Created:   2026-06-07 13:45:22 UTC
+
+Terraform acquires a state lock to protect the state from being written
+by multiple users at the same time. Please resolve the issue above and try
+again.
+
+##[error]Process completed with exit code 1.

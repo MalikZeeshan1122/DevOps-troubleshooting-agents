@@ -1,0 +1,49 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: payment-service-memory-alerts
+  namespace: production
+  labels:
+    app: payment-service
+spec:
+  groups:
+    - name: payment-service.rules
+      rules:
+        - alert: PaymentServiceMemoryHigh
+          expr: |
+            (
+              sum by (pod) (container_memory_working_set_bytes{container="payment-service", namespace="production"})
+              /
+              sum by (pod) (kube_pod_container_resource_limits{container="payment-service", resource="memory", namespace="production"})
+            ) > 0.85
+          for: 5m
+          labels:
+            severity: warning
+            service: payment-service
+          annotations:
+            summary: "payment-service pod {{ $labels.pod }} memory above 85% of limit"
+            description: "Memory pressure detected. OOMKill risk — check BatchProcessor batch size and heap settings."
+
+        - alert: PaymentServiceOOMKilled
+          expr: |
+            increase(kube_pod_container_status_restarts_total{container="payment-service", namespace="production"}[10m]) > 2
+            and on (pod)
+            kube_pod_container_status_last_terminated_reason{container="payment-service", reason="OOMKilled", namespace="production"} == 1
+          for: 1m
+          labels:
+            severity: critical
+            service: payment-service
+          annotations:
+            summary: "payment-service pod {{ $labels.pod }} OOMKilled"
+            description: "Container exceeded memory limit. Immediate rollback or scale-up required."
+
+        - alert: PaymentServiceRestartStorm
+          expr: |
+            increase(kube_pod_container_status_restarts_total{container="payment-service", namespace="production"}[10m]) > 5
+          for: 2m
+          labels:
+            severity: critical
+            service: payment-service
+          annotations:
+            summary: "payment-service restart storm on {{ $labels.pod }}"
+            description: "12+ restarts in 10m baseline breach — likely crash loop from OOM or failed probes."
